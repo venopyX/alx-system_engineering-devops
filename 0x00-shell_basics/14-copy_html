@@ -1,2 +1,2 @@
 #!/bin/bash
-rsync -avz --update --exclude='*.html' . ../*.html
+find . -type f -name "*.html" -exec cp {} .. \;
