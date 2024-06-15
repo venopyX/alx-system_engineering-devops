@@ -1,2 +1,2 @@
 #!/bin/bash
-find . -type f -name "*.html" -exec cp {} .. \;
+cp -uvf --target-directory=../ $(find . -maxdepth 1 -name "*.html" -type f -newer ../ -o ! -e ../)
