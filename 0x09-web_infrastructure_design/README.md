@@ -15,7 +15,7 @@
 - **Scalability**: Limited by single server capacity.
 
 ### Diagram
-![Simple Web Stack](https://imgur.com/zc5BbCy)
+![Simple Web Stack](https://i.imgur.com/zc5BbCy.png)
 
 ## Task 1: Distributed Web Infrastructure
 
