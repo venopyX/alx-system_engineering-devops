@@ -51,4 +51,4 @@
 - **Component Separation**: Improves scalability and reliability.
 
 ### Diagram
-![Scale Up](#)
+![Scale Up](https://i.imgur.com/vdPmClO.png)
