@@ -43,7 +43,7 @@
 - **Database Write Limitation**: Only one MySQL server for writes.
 
 ### Diagram
-![Secured and Monitored Web Infrastructure](#)
+![Secured and Monitored Web Infrastructure](https://i.imgur.com/7hafF0m.png)
 
 ## Task 3: Scale Up
 
