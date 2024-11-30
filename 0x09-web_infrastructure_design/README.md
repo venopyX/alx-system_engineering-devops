@@ -29,7 +29,7 @@
 - **Monitoring**: Lack of monitoring tools.
 
 ### Diagram
-![Distributed Web Infrastructure](#)
+![Distributed Web Infrastructure](https://i.imgur.com/V4nrGr3.png)
 
 ## Task 2: Secured and Monitored Web Infrastructure
 
