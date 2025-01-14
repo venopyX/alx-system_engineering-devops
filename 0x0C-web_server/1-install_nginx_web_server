@@ -1,62 +1,32 @@
 #!/usr/bin/env bash
-# Configures a new Ubuntu machine to install Nginx,
-# set it to listen on port 80, and serve a "Hello World" page.
-# Author: Gemechis Chala
+# Configures a new ubuntu machine by installing
+# Nginx where it should be listening on port 80
+# Serve a page that would return a Hello World string
+#
 
-set -e  # Exit immediately if a command exits with a non-zero status.
+echo -e "Updating and installing Nginx.\n"
+sudo apt-get update -y -qq && \
+         sudo apt-get install nginx -y
 
-echo -e "Starting configuration for Nginx.\n"
+echo -e "\nSetting up some minor stuff.\n"
 
-# Function to update and install Nginx
-install_nginx() {
-    echo "Updating package lists and installing Nginx..."
-    sudo apt-get update -y -qq
-    sudo apt-get install -y nginx
-}
+# starting nginx service
+sudo service nginx start
 
-# Function to configure Nginx service and firewall
-configure_nginx() {
-    echo "Starting Nginx service..."
-    sudo service nginx start
+# allowing nginx on firewall
+sudo ufw allow 'Nginx HTTP'
 
-    echo "Allowing Nginx HTTP through the firewall..."
-    sudo ufw allow 'Nginx HTTP'
-}
+# Give the user ownership to website files for easy editing
+sudo chown -R "$USER":"$USER" /var/www/html
+sudo chmod -R 755 /var/www
 
-# Function to set permissions for the web directory
-set_permissions() {
-    echo "Setting ownership and permissions for /var/www..."
-    sudo chown -R "$USER":"$USER" /var/www/html
-    sudo chmod -R 755 /var/www
-}
+# Backup default index
+cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
 
-# Function to create a "Hello World" index page
-create_index_page() {
-    local index_file="/var/www/html/index.nginx-debian.html"
-    local backup_file="${index_file}.bckp"
+# Creating new index
+echo -e "Hello World!" | dd status=none of=/var/www/html/index.nginx-debian.html
 
-    echo "Backing up the default index file..."
-    sudo cp "$index_file" "$backup_file"
+# Restarting nginx
+sudo service nginx restart
 
-    echo "Creating a new index page with 'Hello World!'..."
-    echo -e "Hello World!" | sudo dd status=none of="$index_file"
-}
-
-# Function to restart Nginx service
-restart_nginx() {
-    echo "Restarting Nginx service..."
-    sudo service nginx restart
-}
-
-# Main function to orchestrate all tasks
-main() {
-    install_nginx
-    configure_nginx
-    set_permissions
-    create_index_page
-    restart_nginx
-
-    echo -e "\nNginx setup completed successfully! ✅\n"
-}
-
-main
+echo -e "\nCompleted. ✅\n"
