@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# Configures a new Ubuntu machine by installing Nginx,
+# setting it to listen on port 80, serving a "Hello World!" page,
+# and adding a 301 redirect for /redirect_me.
+
+set -e  # Exit immediately if a command exits with a non-zero status.
+
+# Function to install and configure Nginx
+install_nginx() {
+    echo "Updating package lists and installing Nginx..."
+    sudo apt-get update -y -qq
+    sudo apt-get install -y nginx
+}
+
+# Function to set up Nginx permissions and basic configuration
+configure_nginx() {
+    echo "Starting Nginx service..."
+    sudo service nginx start
+
+    echo "Allowing Nginx HTTP through the firewall..."
+    sudo ufw allow 'Nginx HTTP'
+
+    echo "Setting ownership and permissions for /var/www..."
+    sudo chown -R "$USER":"$USER" /var/www/html
+    sudo chmod -R 755 /var/www
+}
+
+# Function to configure the "Hello World!" index page
+setup_index_page() {
+    local index_file="/var/www/html/index.nginx-debian.html"
+    local backup_file="${index_file}.bckp"
+
+    echo "Backing up the default index file..."
+    sudo cp "$index_file" "$backup_file"
+
+    echo "Creating a new index page with 'Hello World!'..."
+    echo -e "Hello World!" | sudo tee "$index_file" > /dev/null
+}
+
+# Function to configure a 301 redirect for /redirect_me
+setup_redirection() {
+    local nginx_config="/etc/nginx/sites-available/default"
+    local redirect_rule="rewrite ^/redirect_me https://scorpidev.me permanent;"
+
+    echo "Adding 301 redirect for /redirect_me..."
+    sudo sed -i "/^\s*location \/ {/a \ \ \ \ $redirect_rule" "$nginx_config"
+}
+
+# Function to restart Nginx service
+restart_nginx() {
+    echo "Restarting Nginx service..."
+    sudo service nginx restart
+}
+
+# Main function to orchestrate all tasks
+main() {
+    install_nginx
+    configure_nginx
+    setup_index_page
+    setup_redirection
+    restart_nginx
+
+    echo -e "\nNginx has been successfully configured with 301 redirection! ✅\n"
+}
+
+main
