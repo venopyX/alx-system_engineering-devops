@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Script to transfer a file from a client to a server using SCP.
+# Author: Gemechis Chala
+
+# Function to display usage instructions
+show_usage() {
+    echo "Usage:"
+    echo "  $0 PATH_TO_FILE IP USERNAME [PATH_TO_SSH_KEY]"
+    echo
+    echo "Arguments:"
+    echo "  PATH_TO_FILE     Path to the file to be transferred."
+    echo "  IP               IP address of the server."
+    echo "  USERNAME         Username for the server."
+    echo "  PATH_TO_SSH_KEY  (Optional) Path to the private SSH key."
+    exit 1
+}
+
+# Function to transfer the file using SCP
+transfer_file() {
+    local file="$1"
+    local ip="$2"
+    local user="$3"
+    local ssh_key="$4"
+
+    # Check if the SSH key is provided
+    if [ -z "$ssh_key" ]; then
+        echo "Transferring file without specifying an SSH key..."
+        scp -o StrictHostKeyChecking=no "$file" "$user@$ip":~/
+    else
+        echo "Transferring file using the provided SSH key..."
+        scp -i "$ssh_key" -o StrictHostKeyChecking=no "$file" "$user@$ip":~/
+    fi
+}
+
+# Main script logic
+if [ "$#" -lt 3 ]; then
+    show_usage
+else
+    transfer_file "$1" "$2" "$3" "$4"
+    echo "File transfer completed successfully!"
+fi
