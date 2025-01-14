@@ -39,7 +39,7 @@ create_index_page() {
     sudo cp "$index_file" "$backup_file"
 
     echo "Creating a new index page with 'Hello World!'..."
-    echo -e "Hello World!" | sudo tee "$index_file" > /dev/null
+    echo -e "Hello World!" | sudo dd status=none of="$index_file"
 }
 
 # Function to restart Nginx service
