@@ -1,7 +1,59 @@
 #!/usr/bin/env bash
-# Installs nginx server
-apt-get update
-apt-get -y install nginx
-ufw allow 'Nginx HTTP'
-echo "Hello World!" > /var/www/html/index.html
-service nginx start
+# Configures a new Ubuntu machine to install Nginx,
+# set it to listen on port 80, and serve a "Hello World" page.
+
+echo -e "Starting configuration for Nginx.\n"
+
+# Function to update and install Nginx
+install_nginx() {
+    echo "Updating package lists and installing Nginx..."
+    sudo apt-get update -y -qq
+    sudo apt-get install -y nginx
+}
+
+# Function to configure Nginx service and firewall
+configure_nginx() {
+    echo "Starting Nginx service..."
+    sudo service nginx start
+
+    echo "Allowing Nginx HTTP through the firewall..."
+    sudo ufw allow 'Nginx HTTP'
+}
+
+# Function to set permissions for the web directory
+set_permissions() {
+    echo "Setting ownership and permissions for /var/www..."
+    sudo chown -R "$USER":"$USER" /var/www/html
+    sudo chmod -R 755 /var/www
+}
+
+# Function to create a "Hello World" index page
+create_index_page() {
+    local index_file="/var/www/html/index.nginx-debian.html"
+    local backup_file="${index_file}.bckp"
+
+    echo "Backing up the default index file..."
+    sudo cp "$index_file" "$backup_file"
+
+    echo "Creating a new index page with 'Hello World!'..."
+    echo -e "Hello World!" | sudo tee "$index_file" > /dev/null
+}
+
+# Function to restart Nginx service
+restart_nginx() {
+    echo "Restarting Nginx service..."
+    sudo service nginx restart
+}
+
+# Main function to orchestrate all tasks
+main() {
+    install_nginx
+    configure_nginx
+    set_permissions
+    create_index_page
+    restart_nginx
+
+    echo -e "\nNginx setup completed successfully! ✅\n"
+}
+
+main
